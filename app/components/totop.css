@@ -1,0 +1,12 @@
+.bottom-to-top {
+    position: fixed;
+    bottom: 56px;
+    right: 8px;
+    width: 38px;
+    height: 38px;
+    z-index: 300;
+    display: none;
+    transform-origin: 0;
+    opacity: 1;
+    transform: scale(1,1);
+}

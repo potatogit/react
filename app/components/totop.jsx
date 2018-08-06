@@ -4,7 +4,9 @@ import React from 'react';
 let ToTop = React.createClass({
 	render: function() {
 		return (
-			<div>hello to top</div>
+			<div className="bottom-to-top">
+				<img src=" ./images/scroll-to-top-icon-new.png"/>
+			</div>
 		);
 	}
 });

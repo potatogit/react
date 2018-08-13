@@ -19,7 +19,7 @@ ReactDOM.render(
 		<Spike source="http://localhost:3000/data/spike" />
 		<More source="http://localhost:3000/data/more" />
 		<Like source="http://localhost:3000/data/like" />
-		<ToTop/>
+		<ToTop showUnder="1200" />
 	</div>,
 	document.querySelector("#myApp")
 );

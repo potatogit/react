@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node --use-strict ./bin/www"
+    "start": "node $NODE_DEBUG_OPTION --use-strict ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
@@ -12,7 +12,8 @@
     "ejs": "~2.4.1",
     "express": "~4.13.4",
     "morgan": "~1.7.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "co": "~4.6.0"
   },
   "devDependencies": {
     "url": "^0.11.0"

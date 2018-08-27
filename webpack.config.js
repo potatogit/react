@@ -23,6 +23,7 @@ module.exports = {
 	},
 	devServer: {
 		contentBase: "./build", //静态资源的目录
+		port: 8081,
 			noInfo: true, //  --no-info option
 			hot: true,   //自动刷新
 			inline: true

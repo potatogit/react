@@ -2,7 +2,6 @@
 let express = require('express');
 let router = express.Router();
 let fs = require('fs');
-let co = require('co');
 
 
 let dataBase = null;
@@ -56,185 +55,170 @@ let spikeNames = [];
 let moreNames = [];
 let likeNames = [];
 
-var gen = function * () {
-	yield readFileData();
+async function readFileGetFileName () {
+	try {
+		await readFileData();
+		getFileName("./public/images/swiper", "swiper").then((files) => {
+			imgNames = files;
+		},() => {
+			console.log(err);
+			imgNames = false;
+		});
 
-};
+		getFileName("./public/images/otherapp", "otherapp").then((files) => {
+			let obj = dataBase.otherapp;
+			appNames = files.map((file, index) => {
+				obj[index].icon = file;
+				return obj[index];
+			});
+		},() => {
+			console.log(err);
+		});
 
-var gen2 = function * () {
-	yield 1;
-	yield 2;
-	return 3;
+		getFileName("./public/images/spike", "spike").then((files) => {
+			let obj = dataBase.spike.store;
+			spikeNames = files.map((file, index) => {
+				obj[index].icon = file;
+				return obj[index];
+			});
+		},() => {
+			console.log(err);
+		})
+
+		getFileName("./public/images/more", "more").then((files) => {
+			moreNames = files.map((file, index) => {
+				return {
+					icon: file,
+					url: dataBase.more[index],
+				}
+			});
+		},() => {
+			console.log(err);
+		})
+
+		getFileName("./public/images/like", "like").then((files) => {
+			let obj = dataBase.like;
+			likeNames = files.map((file, index) => {
+				obj[index].icon = file;
+				return obj[index];
+			})
+		},() => {
+			console.log(err);
+		})
+	} catch (err) {
+		console.log(err);
+	}
 }
 
-co(gen2);
+readFileGetFileName();
 
-// co(gen);
+exports.swiper = (req, res) => {
+	let reg = /\?callback=(.*)/;
+	let callback = reg.exec(req.url)[1];
+	const sendData = {
+		status: 0,
+		msg: "",
+		data: "",
+	}
+	if(imgNames) {
+		sendData.status = 1;
+		sendData.msg = "success";
+		sendData.data = imgNames;
+	}else {
+		sendData.msg = "error";
+	}
+	let json = JSON.stringify(sendData);
+  	res.send(callback + '(' + json + ')');
+};
 
-console.log("llll");
+exports.otherapp = (req, res) => {
+	let reg = /\?callback=(.*)/;
+	let callback = reg.exec(req.url)[1];
+	const sendData = {
+		status: 0,
+		msg: "",
+		data: [],
+	}
 
-// readFileData().then(() => {
-// 	getFileName("./public/images/swiper", "swiper").then((files) => {
-// 		imgNames = files;
-// 	},() => {
-// 		console.log(err);
-// 		imgNames = false;
-// 	});
-//
-// 	getFileName("./public/images/otherapp", "otherapp").then((files) => {
-// 		let obj = dataBase.otherapp;
-// 		appNames = files.map((file, index) => {
-// 			obj[index].icon = file;
-// 			return obj[index];
-// 		});
-// 	},() => {
-// 		console.log(err);
-// 	});
-//
-// 	getFileName("./public/images/spike", "spike").then((files) => {
-// 		let obj = dataBase.spike.store;
-// 		spikeNames = files.map((file, index) => {
-// 			obj[index].icon = file;
-// 			return obj[index];
-// 		});
-// 	},() => {
-// 		console.log(err);
-// 	})
-//
-// 	getFileName("./public/images/more", "more").then((files) => {
-// 		moreNames = files.map((file, index) => {
-// 			return {
-// 				icon: file,
-// 				url: dataBase.more[index],
-// 			}
-// 		});
-// 	},() => {
-// 		console.log(err);
-// 	})
-//
-// 	getFileName("./public/images/like", "like").then((files) => {
-// 		let obj = dataBase.like;
-// 		likeNames = files.map((file, index) => {
-// 			obj[index].icon = file;
-// 			return obj[index];
-// 		})
-// 	},() => {
-// 		console.log(err);
-// 	})
-//
-//
-// }, (err) => {
-// 	console.log(err);
-// })
-//
-//
-// exports.swiper = (req, res) => {
-// 	let reg = /\?callback=(.*)/;
-// 	let callback = reg.exec(req.url)[1];
-// 	const sendData = {
-// 		status: 0,
-// 		msg: "",
-// 		data: "",
-// 	}
-// 	if(imgNames) {
-// 		sendData.status = 1;
-// 		sendData.msg = "success";
-// 		sendData.data = imgNames;
-// 	}else {
-// 		sendData.msg = "error";
-// 	}
-// 	let json = JSON.stringify(sendData);
-//   	res.send(callback + '(' + json + ')');
-// };
-//
-// exports.otherapp = (req, res) => {
-// 	let reg = /\?callback=(.*)/;
-// 	let callback = reg.exec(req.url)[1];
-// 	const sendData = {
-// 		status: 0,
-// 		msg: "",
-// 		data: [],
-// 	}
-//
-// 	if(appNames) {
-// 		sendData.status = 1;
-// 		sendData.msg = "success";
-// 		sendData.data = appNames;
-//
-// 	}else {
-// 		sendData.msg = "error";
-// 	}
-//
-// 	let json = JSON.stringify(sendData);
-//   	res.send(callback + '(' + json + ')');
-// };
-//
-// exports.spike = (req, res) => {
-// 	let reg = /\?callback=(.*)/;
-// 	let callback = reg.exec(req.url)[1];
-// 	const sendData = {
-// 		status: 0,
-// 		msg: "",
-// 		data: [],
-// 		times: "",
-// 		more: "",
-// 	}
-//
-// 	if(spikeNames) {
-// 		sendData.status = 1;
-// 		sendData.msg = "success";
-// 		sendData.data = spikeNames;
-// 		sendData.times = dataBase.spike.times;
-// 		sendData.more = dataBase.spike.more;
-// 	}else {
-// 		sendData.msg = "error";
-// 	}
-//
-// 	let json = JSON.stringify(sendData);
-//   	res.send(callback + '(' + json + ')');
-// };
-//
-// exports.more = (req, res) => {
-// 	let reg = /\?callback=(.*)/;
-// 	let callback = reg.exec(req.url)[1];
-// 	const sendData = {
-// 		status: 0,
-// 		msg: "",
-// 		data: [],
-// 	}
-//
-// 	if(moreNames) {
-// 		sendData.status = 1;
-// 		sendData.msg = "success";
-// 		sendData.data = moreNames;
-// 	}else {
-// 		sendData.msg = "error";
-// 	}
-//
-// 	let json = JSON.stringify(sendData);
-//   	res.send(callback + '(' + json + ')');
-// };
-//
-// exports.like = (req, res) => {
-// 	let reg = /\?callback=(.*)/;
-// 	let callback = reg.exec(req.url)[1];
-// 	const sendData = {
-// 		status: 0,
-// 		msg: "",
-// 		data: [],
-// 	}
-//
-// 	if(likeNames) {
-// 		sendData.status = 1;
-// 		sendData.msg = "success";
-// 		sendData.data = likeNames;
-// 	}else {
-// 		sendData.msg = "error";
-// 	}
-//
-// 	let json = JSON.stringify(sendData);
-//   	res.send(callback + '(' + json + ')');
-// };
+	if(appNames) {
+		sendData.status = 1;
+		sendData.msg = "success";
+		sendData.data = appNames;
+
+	}else {
+		sendData.msg = "error";
+	}
+
+	let json = JSON.stringify(sendData);
+  	res.send(callback + '(' + json + ')');
+};
+
+exports.spike = (req, res) => {
+	let reg = /\?callback=(.*)/;
+	let callback = reg.exec(req.url)[1];
+	const sendData = {
+		status: 0,
+		msg: "",
+		data: [],
+		times: "",
+		more: "",
+	}
+
+	if(spikeNames) {
+		sendData.status = 1;
+		sendData.msg = "success";
+		sendData.data = spikeNames;
+		sendData.times = dataBase.spike.times;
+		sendData.more = dataBase.spike.more;
+	}else {
+		sendData.msg = "error";
+	}
+
+	let json = JSON.stringify(sendData);
+  	res.send(callback + '(' + json + ')');
+};
+
+exports.more = (req, res) => {
+	let reg = /\?callback=(.*)/;
+	let callback = reg.exec(req.url)[1];
+	const sendData = {
+		status: 0,
+		msg: "",
+		data: [],
+	}
+
+	if(moreNames) {
+		sendData.status = 1;
+		sendData.msg = "success";
+		sendData.data = moreNames;
+	}else {
+		sendData.msg = "error";
+	}
+
+	let json = JSON.stringify(sendData);
+  	res.send(callback + '(' + json + ')');
+};
+
+exports.like = (req, res) => {
+	let reg = /\?callback=(.*)/;
+	let callback = reg.exec(req.url)[1];
+	const sendData = {
+		status: 0,
+		msg: "",
+		data: [],
+	}
+
+	if(likeNames) {
+		sendData.status = 1;
+		sendData.msg = "success";
+		sendData.data = likeNames;
+	}else {
+		sendData.msg = "error";
+	}
+
+	let json = JSON.stringify(sendData);
+  	res.send(callback + '(' + json + ')');
+};
 
 
 

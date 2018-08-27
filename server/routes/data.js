@@ -60,7 +60,7 @@ async function readFileGetFileName () {
 		await readFileData();
 		getFileName("./public/images/swiper", "swiper").then((files) => {
 			imgNames = files;
-		},() => {
+		},err => {
 			console.log(err);
 			imgNames = false;
 		});
@@ -71,7 +71,7 @@ async function readFileGetFileName () {
 				obj[index].icon = file;
 				return obj[index];
 			});
-		},() => {
+		},err => {
 			console.log(err);
 		});
 
@@ -81,7 +81,7 @@ async function readFileGetFileName () {
 				obj[index].icon = file;
 				return obj[index];
 			});
-		},() => {
+		},err => {
 			console.log(err);
 		})
 
@@ -92,7 +92,7 @@ async function readFileGetFileName () {
 					url: dataBase.more[index],
 				}
 			});
-		},() => {
+		},err => {
 			console.log(err);
 		})
 
@@ -102,7 +102,7 @@ async function readFileGetFileName () {
 				obj[index].icon = file;
 				return obj[index];
 			})
-		},() => {
+		},err => {
 			console.log(err);
 		})
 	} catch (err) {
@@ -110,7 +110,9 @@ async function readFileGetFileName () {
 	}
 }
 
-readFileGetFileName();
+readFileGetFileName().then(function(result) {
+	console.log(result);
+});
 
 exports.swiper = (req, res) => {
 	let reg = /\?callback=(.*)/;
